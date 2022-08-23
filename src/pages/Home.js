@@ -7,6 +7,7 @@ import { library } from "../helpers/albumList";
 const { TabPane } = Tabs;
 
 const Home = () => {
+  // instead of hard coding the library, retrieve it from the blockchain.
   return (
     <>
       <Tabs defaultActiveKey="1" centered>
