@@ -1,0 +1,22 @@
+@import '~antd/dist/antd.css';
+
+.appTitle {
+    justify-content: center;
+    text-align: center;
+    color: antiquewhite;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+.div1 {
+    justify-content: center;
+    text-align: center;
+}
+
+.form {
+    justify-content: center;
+    text-align: center;
+    padding: 25px 75px 25px 25px;
+}

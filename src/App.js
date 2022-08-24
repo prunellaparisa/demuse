@@ -2,6 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import Album from './pages/Album';
 import './App.css';
 import { Link } from "react-router-dom";
@@ -13,19 +15,13 @@ import { SearchOutlined, DownCircleOutlined } from "@ant-design/icons";
 const { Content, Sider, Footer } = Layout;
 
 const App = () => {
-
-  const [nftAlbum, setNftAlbum] = useState();
-  return (
-    <>
-      <Layout>
-        <Layout>
-          <Sider width={300} className="sideBar">
+  /*<Sider width={300} className="sideBar">
             <img src={Spotify} alt="Logo" className="logo"></img>
             <div className="searchBar">
               <span> Search </span>
               <SearchOutlined style={{ fontSize: "30px" }} />
             </div>
-            <Link to="/">
+            <Link to="/home">
             <p style={{ color: "#1DB954" }}> Home </p>
             </Link>
             <p> Your Music </p>
@@ -36,10 +32,18 @@ const App = () => {
                 <DownCircleOutlined style={{ fontSize: "30px" }} />
               </div>
             </div>
-          </Sider>
+          </Sider>*/
+
+  const [nftAlbum, setNftAlbum] = useState();
+  return (
+    <>
+      <Layout>
+        <Layout>
           <Content className="contentWindow">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/album" element={<Album setNftAlbum={setNftAlbum}/>} />
           </Routes>
           </Content>
