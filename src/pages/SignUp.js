@@ -1,17 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { React, useState} from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./SignInSignUp.css";
 import {  Form, Input, Button  } from 'antd';
+import { auth } from "../utils/firebase";
 
 const SignUp = () => {
-    const onFinish = (values) => {
-        console.log('Success:', values);
-        console.log('values.email:', values.email); // use this to access values entered
+    //Input validation
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const onFinish = async (values) => {
+        try{
+            await signUp(values.email, values.password).then(navigate('/')); // add user to db
+          }catch(err){ 
+            switch(err.code){
+              case 'auth/email-already-in-use':
+                return setError("Email has been used, try another one");
+              case 'auth/weak-password':
+                return setError("Password is too weak. Try adding more characters!");
+              default:
+                return setError("Something is wrong... please try again later");
+            }
+          }
       };
     
       const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
       };
+
+      const signUp = (email, password) => {
+        return auth.createUserWithEmailAndPassword(email,password);
+      }
     return (
         <>
             <h1 className="appTitle">demuse</h1>
@@ -79,6 +97,10 @@ const SignUp = () => {
                         </Button>
                     </Form.Item>
                 </Form>
+            </div>
+            <h3>{error}</h3>
+            <div className="div1">
+                <Button type="link" href="/">Already have a demuse account?</Button>
             </div>
     </>
   );

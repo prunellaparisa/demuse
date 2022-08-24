@@ -1,17 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { React, useState} from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./SignInSignUp.css";
 import {  Form, Input, Button  } from 'antd';
+import { auth } from "../utils/firebase";
 
 const SignIn = () => {
-    const onFinish = (values) => {
-        console.log('Success:', values);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+      const onFinish = async (values) => {
+        try{
+            await signIn(values.email, values.password);
+            //redirect to home page
+            navigate('/home');
+        } catch (e){
+            switch(e.code){
+              case 'auth/user-not-found':
+                setError('Email has not been used yet');
+                break;
+              default:
+                setError('Email or password are incorrect.');
+            }
+        }
       };
     
       const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
       };
 
+      const signIn = (email, password) => {
+        return auth.signInWithEmailAndPassword(email, password);
+      }
     return (
         <>
             <h1 className="appTitle">demuse</h1>
@@ -32,12 +50,12 @@ const SignIn = () => {
                     className="form"
                     >
                     <Form.Item
-                        label={<label style={{ color: "antiquewhite" }}>Username:</label>}
-                        name="username"
+                        label={<label style={{ color: "antiquewhite" }}>Email:</label>}
+                        name="email"
                         rules={[
                         {
                             required: true,
-                            message: 'Please input your username!',
+                            message: 'Please input your email!',
                         },
                         ]}
                     >
@@ -68,7 +86,7 @@ const SignIn = () => {
                     </Form.Item>
                 </Form>
             </div>
-
+            <h3>{error}</h3>
             <div className="div1">
                 <Button type="link" href="/signup">Don't have a demuse account?</Button>
             </div>

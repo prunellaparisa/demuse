@@ -10,6 +10,12 @@ h1 {
     font-size: 50px;
 }
 
+h3 {
+    color: antiquewhite;
+    justify-content: center;
+    text-align: center;
+}
+
 .div1 {
     justify-content: center;
     text-align: center;
