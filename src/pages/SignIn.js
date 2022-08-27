@@ -8,10 +8,14 @@ const SignIn = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
       const onFinish = async (values) => {
+        let user;
         try{
-            await signIn(values.email, values.password);
-            //redirect to home page
-            navigate('/home');
+            await signIn(values.email, values.password).then((i) => {
+                user = i.user;
+                //console.log("SignIn user state: " + user);
+              });
+              //console.log("SignIn user state: " + user.uid);
+            navigate('/home', {state: {userUID: user.uid}}); //possible to pass props through navigation? pass user that is
         } catch (e){
             switch(e.code){
               case 'auth/user-not-found':

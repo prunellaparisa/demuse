@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Home.css";
 import { Tabs } from "antd";
 import { library } from "../helpers/albumList";
@@ -7,6 +7,9 @@ import { library } from "../helpers/albumList";
 const { TabPane } = Tabs;
 
 const Home = () => {
+  const { state } = useLocation();
+  const { userUID } = state; // Read values passed on state
+  console.log("user: " + userUID); //able to pass uid
   // instead of hard coding the library, retrieve it from the blockchain/firebase.
   return (
     <>

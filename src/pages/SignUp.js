@@ -2,7 +2,7 @@ import { React, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignInSignUp.css";
 import {  Form, Input, Button  } from 'antd';
-import { auth } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
 
 const SignUp = () => {
     //Input validation
@@ -10,11 +10,14 @@ const SignUp = () => {
     const navigate = useNavigate();
     const onFinish = async (values) => {
         try{
-            await signUp(values.email, values.password).then(navigate('/')); // add user to db
+            await signUp(values.email, values.password).then((i) => {
+              addUserToDB(i.user.uid, values.username);
+              navigate('/home', {state: {userUID: i.user.uid}}); //possible to pass props through navigation? pass user that is
+            }); 
           }catch(err){ 
             switch(err.code){
               case 'auth/email-already-in-use':
-                return setError("Email has been used, try another one");
+                return setError("Email has been used, try another one or sign in instead");
               case 'auth/weak-password':
                 return setError("Password is too weak. Try adding more characters!");
               default:
@@ -29,6 +32,20 @@ const SignUp = () => {
 
       const signUp = (email, password) => {
         return auth.createUserWithEmailAndPassword(email,password);
+      }
+
+      const addUserToDB = async (uid, username) => {
+        const  docExists = (await db.collection("user").doc(uid).get()).exists
+
+        if(!docExists){
+          await db.collection("user").doc(uid).set ({
+            username: username,
+            role: 'customer',
+            tracklist: [],
+            lastPaidDate: 'invalid',
+            listeningLog: []
+        });
+        }// add user to db
       }
     return (
         <>
