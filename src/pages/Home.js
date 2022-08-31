@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import "./Home.css";
 import { Tabs } from "antd";
 import { library } from "../helpers/albumList";
+import { MusicUpload } from "./MusicUpload";
 
 const { TabPane } = Tabs;
 
@@ -29,59 +30,8 @@ const Home = () => {
                   ))}
                 </div>
               </TabPane>
-              <TabPane tab="GENRES & MOODS" key="2">
-                <h1 className="featuredTitle">Pop Music</h1>
-                <div className="albums">
-                  {library.slice(7, 13).map((e) => (
-                    <Link to="/album" state={e} className="albumSelection">
-                      <img
-                        src={e.image}
-                        alt="bull"
-                        style={{ width: "150px", marginBottom: "10px" }}
-                      ></img>
-                      <p>{e.title}</p>
-                    </Link>
-                  ))}
-                </div>
-                <h1 className="featuredTitle">Top Hits</h1>
-                <div className="albums">
-                  {library.slice(5, 11).map((e) => (
-                    <Link to="/album" state={e} className="albumSelection">
-                      <img
-                        src={e.image}
-                        alt="bull"
-                        style={{ width: "150px", marginBottom: "10px" }}
-                      ></img>
-                      <p>{e.title}</p>
-                    </Link>
-                  ))}
-                </div>
-                <h1 className="featuredTitle">Country</h1>
-                <div className="albums">
-                  {library.slice(0, 6).map((e) => (
-                    <Link to="/album" state={e} className="albumSelection">
-                      <img
-                        src={e.image}
-                        alt="bull"
-                        style={{ width: "150px", marginBottom: "10px" }}
-                      ></img>
-                      <p>{e.title}</p>
-                    </Link>
-                  ))}
-                </div>
-                <h1 className="featuredTitle">Classics</h1>
-                <div className="albums">
-                  {library.slice(5, 11).map((e) => (
-                    <Link to="/album" state={e} className="albumSelection">
-                      <img
-                        src={e.image}
-                        alt="bull"
-                        style={{ width: "150px", marginBottom: "10px" }}
-                      ></img>
-                      <p>{e.title}</p>
-                    </Link>
-                  ))}
-                </div>
+              <TabPane tab="FOR ARTISTS" key="2">
+                {MusicUpload}
               </TabPane>
               <TabPane tab="NEW RELEASES" key="3">
                 <h1 className="featuredTitle">Hot Off The Press</h1>

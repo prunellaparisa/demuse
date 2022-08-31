@@ -12,9 +12,7 @@ const SignIn = () => {
         try{
             await signIn(values.email, values.password).then((i) => {
                 user = i.user;
-                //console.log("SignIn user state: " + user);
               });
-              //console.log("SignIn user state: " + user.uid);
             navigate('/home', {state: {userUID: user.uid}}); //possible to pass props through navigation? pass user that is
         } catch (e){
             switch(e.code){
