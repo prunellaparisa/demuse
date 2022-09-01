@@ -1,11 +1,12 @@
-import React from 'react';
-import { useState } from 'react';
+import React from "react";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Album from './pages/Album';
-import './App.css';
+import Album from "./pages/Album";
+import MusicUpload from "./pages/MusicUpload";
+import "./App.css";
 import { Link } from "react-router-dom";
 import Player from "./components/AudioPlayer";
 import { Layout } from "antd";
@@ -40,25 +41,24 @@ const App = () => {
       <Layout>
         <Layout>
           <Content className="contentWindow">
-          <Routes>
-            <Route path="/" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/album" element={<Album setNftAlbum={setNftAlbum}/>} />
-          </Routes>
+            <Routes>
+              <Route path="/" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/upload" element={<MusicUpload />} />
+              <Route
+                path="/album"
+                element={<Album setNftAlbum={setNftAlbum} />}
+              />
+            </Routes>
           </Content>
         </Layout>
         <Footer className="footer">
-          {nftAlbum &&
-          <Player
-            url={nftAlbum}
-          />
-          }
+          {nftAlbum && <Player url={nftAlbum} />}
         </Footer>
       </Layout>
     </>
   );
-}
-
+};
 
 export default App;
