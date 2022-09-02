@@ -1,11 +1,16 @@
 import React from "react";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Album from "./pages/Album";
-import MusicUpload from "./pages/MusicUpload";
+import SignIn from "./global/signin/SignIn";
+import SignUp from "./global/signin/SignUp";
+import Album from "./customer/Album";
+import MusicUpload from "./customer/MusicUpload";
+import { AuthProvider } from "./global/auth/Authentication";
+import { UserDataProvider } from "./global/auth/UserData";
+import { PrivateLandingRoute } from "./global/routes/PrivateLandingRoute";
+import ErrorRoute from "./global/routes/ErrorRoute";
+import { PrivateRoute } from "./global/routes/PrivateRoute";
+import Landing from "./global/Landing";
 import "./App.css";
 import { Link } from "react-router-dom";
 import Player from "./components/AudioPlayer";
@@ -14,6 +19,13 @@ import Spotify from "./images/Spotify.png";
 import { SearchOutlined, DownCircleOutlined } from "@ant-design/icons";
 
 const { Content, Sider, Footer } = Layout;
+
+//Roles to access paths
+const role = {
+  AD: "admin",
+  C: "customer",
+  A: "all",
+};
 
 const App = () => {
   /*<Sider width={300} className="sideBar">
@@ -38,25 +50,57 @@ const App = () => {
   const [nftAlbum, setNftAlbum] = useState();
   return (
     <>
-      <Layout>
+      <AuthProvider>
         <Layout>
           <Content className="contentWindow">
             <Routes>
-              <Route path="/" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/upload" element={<MusicUpload />} />
+              <Route
+                path="/"
+                element={
+                  <PrivateLandingRoute>
+                    <UserDataProvider>
+                      <Landing />
+                    </UserDataProvider>
+                  </PrivateLandingRoute>
+                }
+              />
+              <Route
+                path="/upload"
+                element={
+                  <UserDataProvider>
+                    <PrivateRoute role={role.C}>
+                      <MusicUpload />
+                      <Layout>
+                        <Footer className="footer">
+                          {nftAlbum && <Player url={nftAlbum} />}
+                        </Footer>
+                      </Layout>
+                    </PrivateRoute>
+                  </UserDataProvider>
+                }
+              />
               <Route
                 path="/album"
-                element={<Album setNftAlbum={setNftAlbum} />}
+                element={
+                  <UserDataProvider>
+                    <PrivateRoute role={role.C}>
+                      <Album setNftAlbum={setNftAlbum} />
+                      <Layout>
+                        <Footer className="footer">
+                          {nftAlbum && <Player url={nftAlbum} />}
+                        </Footer>
+                      </Layout>
+                    </PrivateRoute>
+                  </UserDataProvider>
+                }
               />
+              <Route path="/login" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/error" element={<ErrorRoute />} />
             </Routes>
           </Content>
         </Layout>
-        <Footer className="footer">
-          {nftAlbum && <Player url={nftAlbum} />}
-        </Footer>
-      </Layout>
+      </AuthProvider>
     </>
   );
 };
