@@ -14,9 +14,9 @@ import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 // admin checks "mint-request" docs to see "submitted" requests and checks if user owns the image and
 // if the audio is authentic and owned by no one else
 const MusicUpload = () => {
-  const { state } = useLocation();
-  const { userUID } = state; // Read values passed on state
-  console.log("music upload user: " + userUID); //able to pass uid
+  //const { state } = useLocation();
+  //const { userUID } = state; // Read values passed on state
+  //console.log("music upload user: " + userUID); //able to pass uid
   const navigate = useNavigate();
 
   const [alert, setAlert] = useState("");
@@ -71,13 +71,6 @@ const MusicUpload = () => {
   return (
     <>
       <div className="musicUpload">
-        <Button
-          type="dashed"
-          size={"default"}
-          onClick={() => navigate("/home", { state: { userUID: userUID } })}
-        >
-          Go Home
-        </Button>
         <h1 className="title">Upload Music To IPFS</h1>
         {alert}
         <div className="uploadForm">

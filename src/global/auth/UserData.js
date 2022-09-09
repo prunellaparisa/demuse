@@ -32,7 +32,7 @@ export const UserDataProvider = ({ children }) => {
           .doc(currentUser.uid)
           .get()
           .then((querySnapshot) => {
-            setUserData(querySnapshot.data());
+            setUserData({ id: querySnapshot.id, ...querySnapshot.data() });
           });
 
         setLoading(false);

@@ -4,37 +4,19 @@ import "./SignInSignUp.css";
 import { Form, Input, Button } from "antd";
 import { useAuth } from "../../global/auth/Authentication";
 import ErrorRoute from "../routes/ErrorRoute";
-import { useMoralis } from "react-moralis";
 
 const SignIn = () => {
   //Retrive the sign up from context
   const { signIn, currentUser } = useAuth();
-  const {
-    authenticate,
-    isAuthenticated,
-    isAuthenticating,
-    user,
-    account,
-    logout,
-  } = useMoralis();
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const onFinish = async (values) => {
     let user;
     try {
-      // TODO how to efficiently authenticate wallet address with firebase data
-      await authenticate({ signingMessage: "Log in using Moralis" })
-        .then(async (user) => {
-          console.log("logged in user:", user.getUsername);
-          console.log(user.get("ethAddress")); // save ethAddress to firebase upon signup and cross check it when signing in
-          await signIn(values.email, values.password).then((i) => {
-            user = i.user;
-            navigate("/");
-          });
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      await signIn(values.email, values.password).then((i) => {
+        user = i.user;
+        navigate("/");
+      });
 
       //navigate('/', {state: {userUID: user.uid}}); //possible to pass props through navigation? pass user that is
     } catch (e) {
