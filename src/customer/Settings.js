@@ -44,7 +44,7 @@ const Settings = () => {
         size={"default"}
         onClick={async () => {
           if (isAuthenticated) {
-            await logout().then(console.log("logged out"));
+            await logout();
           } else {
             await authenticate({
               signingMessage: "Log in using Moralis",

@@ -7,21 +7,11 @@ import Settings from "../Settings";
 import MusicUpload from "../MusicUpload";
 import { useAuth } from "../../global/auth/Authentication";
 import { useUserData } from "../../global/auth/UserData";
-import { useMoralis } from "react-moralis";
-import { db } from "../../utils/firebase";
 const { TabPane } = Tabs;
 
 const CustomerLanding = () => {
   const { signOut } = useAuth();
   const { userData } = useUserData();
-  const {
-    authenticate,
-    isAuthenticated,
-    isAuthenticating,
-    user,
-    account,
-    logout,
-  } = useMoralis();
 
   //const { state } = useLocation();
   //const { userUID } = state; // Read values passed on state
