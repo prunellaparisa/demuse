@@ -139,6 +139,7 @@ const MusicUpload = () => {
         links: metadataLinks,
         status: "submitted",
         adminID: "QW41a9A8aASIKm90KXENdHfWzXr2",
+        artistID: userData.id,
       })
       .then((o) => {
         setLoading(false);
