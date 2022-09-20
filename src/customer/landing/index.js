@@ -5,6 +5,7 @@ import { Tabs, Button } from "antd";
 import { library } from "../../helpers/albumList";
 import Settings from "../Settings";
 import MusicUpload from "../MusicUpload";
+import MusicMint from "../MusicMint";
 const { TabPane } = Tabs;
 
 const CustomerLanding = () => {
@@ -28,10 +29,13 @@ const CustomerLanding = () => {
             ))}
           </div>
         </TabPane>
-        <TabPane tab="FOR ARTISTS" key="2">
+        <TabPane tab="MUSIC UPLOAD" key="2">
           <MusicUpload />
         </TabPane>
-        <TabPane tab="SETTINGS" key="3">
+        <TabPane tab="MUSIC MINT" key="3">
+          <MusicMint />
+        </TabPane>
+        <TabPane tab="SETTINGS" key="4">
           <Settings />
         </TabPane>
       </Tabs>

@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import "./MusicUpload.css";
 import { Button, Form, Upload, Alert, Spin } from "antd";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
@@ -8,7 +7,6 @@ import { useUserData } from "../global/auth/UserData";
 import { db } from "../utils/firebase";
 import { Buffer } from "buffer";
 import getBlobDuration from "get-blob-duration";
-// make a dummy form
 
 //const {  InboxOutlined, UploadOutlined  } = icons;
 // upload files to IPFS, add doc to db to collection "mint-request",
@@ -19,10 +17,6 @@ import getBlobDuration from "get-blob-duration";
 // if the audio is authentic and owned by no one else
 const MusicUpload = () => {
   const { error, isUploading, moralisFile, saveFile } = useMoralisFile();
-  //const { state } = useLocation();
-  //const { userUID } = state; // Read values passed on state
-  //console.log("music upload user: " + userUID); //able to pass uid
-  const navigate = useNavigate();
   const { userData } = useUserData();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState("");
