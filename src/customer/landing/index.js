@@ -35,7 +35,8 @@ const CustomerLanding = () => {
         <TabPane tab="MUSIC MINT" key="3">
           <MusicMint />
         </TabPane>
-        <TabPane tab="SETTINGS" key="4">
+        <TabPane tab="MAKE ALBUM/PLAYLIST" key="4"></TabPane>
+        <TabPane tab="SETTINGS" key="5">
           <Settings />
         </TabPane>
       </Tabs>
