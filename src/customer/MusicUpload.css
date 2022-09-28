@@ -1,7 +1,15 @@
 .musicUpload {
-    color: antiquewhite;
+  color: antiquewhite;
 }
 
-.uploadForm {
-    background-color: antiquewhite;
+[title="Audio(s)"] {
+  color: white !important;
+}
+
+[title="Album Cover"] {
+  color: white !important;
+}
+
+[class="ant-form-item-extra"] {
+  color: white !important;
 }

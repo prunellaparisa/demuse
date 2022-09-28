@@ -6,6 +6,7 @@ import { library } from "../../helpers/albumList";
 import Settings from "../Settings";
 import MusicUpload from "../MusicUpload";
 import MusicMint from "../MusicMint";
+import MakeAlbum from "../MakePlaylist";
 const { TabPane } = Tabs;
 
 const CustomerLanding = () => {
@@ -35,7 +36,9 @@ const CustomerLanding = () => {
         <TabPane tab="MUSIC MINT" key="3">
           <MusicMint />
         </TabPane>
-        <TabPane tab="MAKE ALBUM/PLAYLIST" key="4"></TabPane>
+        <TabPane tab="MAKE PLAYLIST" key="4">
+          <MakeAlbum />
+        </TabPane>
         <TabPane tab="SETTINGS" key="5">
           <Settings />
         </TabPane>

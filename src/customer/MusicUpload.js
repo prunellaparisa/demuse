@@ -8,13 +8,14 @@ import { db } from "../utils/firebase";
 import { Buffer } from "buffer";
 import getBlobDuration from "get-blob-duration";
 
-//const {  InboxOutlined, UploadOutlined  } = icons;
 // upload files to IPFS, add doc to db to collection "mint-request",
-// TODO: goes to submissions page to check submission state, if approved there's a mint button,
+// goes to submissions page to check submission state, if approved there's a mint button,
 // when mint btn pressed, the resulting metadata uris will be minted one by one (for-loop)
 
 // admin checks "mint-request" docs to see "submitted" requests and checks if user owns the image and
 // if the audio is authentic and owned by no one else
+
+// TODO clear form once complete
 const MusicUpload = () => {
   const { error, isUploading, moralisFile, saveFile } = useMoralisFile();
   const { userData } = useUserData();

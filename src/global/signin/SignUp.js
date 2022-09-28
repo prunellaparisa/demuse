@@ -61,7 +61,6 @@ const SignUp = () => {
         username: username,
         role: "customer",
         ethAddress: address,
-        tracklist: [],
         lastPaidDate: "invalid",
         listeningLog: [],
       });
