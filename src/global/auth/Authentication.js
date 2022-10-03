@@ -5,7 +5,7 @@ import {useAuth} and deconstruct it:
     const {currentUser} = useAuth();
 */
 import React, { useContext, useState, useEffect } from "react";
-import { auth } from "../../utils/firebase";
+import app, { auth } from "../../utils/firebase";
 import firebase from "firebase/compat/app";
 import "firebase/compat/app-check";
 
@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const value = {
+    setCurrentUser,
     currentUser,
     signUp,
     signIn,

@@ -17,6 +17,7 @@ import axios from "axios";
 // retrieve approved submission, have a mint button for them, and change status to "minted"
 const MusicMint = () => {
   const { user, enableWeb3, isWeb3Enabled } = useMoralis();
+  const { logout } = useMoralis();
   const { runContractFunction, data, error, isLoading, isFetching } =
     useWeb3Contract();
   const { resolveLink } = useIPFS();
@@ -27,14 +28,20 @@ const MusicMint = () => {
 
   useEffect(() => {
     getSubmissions();
-    enableWeb3();
+    if (!isWeb3Enabled) {
+      enableWeb3();
+    } else {
+      if (userData.ethAddress !== user.get("ethAddress")) {
+        logout();
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (submissions.length > 0) {
       generateSubmissionsUI(submissions);
     } else {
-      setSubmissionsUI(<h1>Nothing to moderate here!</h1>);
+      setSubmissionsUI(<h1>Nothing to mint here!</h1>);
     }
   }, [submissions]);
 
@@ -59,6 +66,7 @@ const MusicMint = () => {
 
   // connect to solidity contract to mint
   const mintAudio2 = async (uri) => {
+    if (userData.ethAddress !== user.get("ethAddress")) return;
     if (!isWeb3Enabled) {
       console.log("web3 not enabled");
       //await enableWeb3();
@@ -536,11 +544,9 @@ const MusicMint = () => {
   const mint = (id, uri) => {
     //getAllTokens();
     uri.map((link) => {
-      mintAudio2(link).then((i) => {
-        console.log("i:" + i);
-      });
+      mintAudio2(link);
     });
-    updateStatus(id, "minted");
+    updateStatus(id, "minted"); // how to really know my stuff has been minted?
   };
 
   // after update, refresh list

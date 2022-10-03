@@ -7,7 +7,7 @@ import ErrorRoute from "../routes/ErrorRoute";
 
 const SignIn = () => {
   //Retrive the sign up from context
-  const { signIn, currentUser } = useAuth();
+  const { signIn, setCurrentUser, currentUser } = useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const onFinish = async (values) => {
@@ -15,6 +15,7 @@ const SignIn = () => {
     try {
       await signIn(values.email, values.password).then((i) => {
         user = i.user;
+        setCurrentUser(i.user);
         navigate("/");
       });
 

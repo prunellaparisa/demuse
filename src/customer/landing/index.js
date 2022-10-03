@@ -50,12 +50,13 @@ const CustomerLanding = () => {
       });
   };
 
+  // albums don't come out in order; temporarily solved it
   const generateAlbumsUI = (albums) => {
     let temp = [];
     albums.map(async (e) => {
-      //console.log("e: " + JSON.stringify(e)); //attempt to make metadata accessible here
+      // console.log("e: " + JSON.stringify(e)); //attempt to make metadata accessible here
       let tracksMetadata = [];
-      let count = 0;
+      //let count = 0;
       let index = 0;
       // e.tracks is in order but tracksMetadata is not; now it is
       await e.tracks.map(async (track) => {
@@ -65,12 +66,17 @@ const CustomerLanding = () => {
         tracksMetadata.push(json); // the array pushing is not in order
         json.id = id; // the id made just before the json is attached to help with rearranging
         //console.log("json.id: " + json.id);
-        count++;
-        if (index === e.tracks.length) {
+        //count++;
+        if (
+          index === e.tracks.length &&
+          e.tracks.length === tracksMetadata.length
+        ) {
           tracksMetadata.sort((a, b) => (a.id > b.id ? 1 : -1)); // rearrange tracks based on id
           //tracksMetadata.map((i) => console.log("yo: " + i.name));
+          //console.log("tracksMetadata.length:" + tracksMetadata.length);
           e.tracks = tracksMetadata;
-          console.log("e.tracks[0]:" + JSON.stringify(e.tracks[0]));
+          //if ()
+          //console.log("e.tracks[0]:" + JSON.stringify(e.tracks[0]));
           //console.log("e: " + JSON.stringify(e));
           temp.push(
             <Link to="/album" state={e} className="albumSelection">
@@ -82,6 +88,10 @@ const CustomerLanding = () => {
               <p>{e.title}</p>
             </Link>
           );
+          //console.log("temp.length: " + temp.length);
+          //setAlbumsUI(temp);
+        }
+        if (temp.length === albums.length) {
           setAlbumsUI(temp);
         }
       });

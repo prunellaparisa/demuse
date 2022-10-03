@@ -9,7 +9,7 @@ import { useMoralis } from "react-moralis";
 
 const SignUp = () => {
   //Retrive the sign up from context
-  const { signUp, currentUser } = useAuth();
+  const { signUp, setCurrentUser, currentUser } = useAuth();
   const {
     authenticate,
     isAuthenticated,
@@ -23,12 +23,13 @@ const SignUp = () => {
   const navigate = useNavigate();
   const onFinish = async (values) => {
     try {
-      await signUp(values.email, values.password).then(async (i) => {
+      await signUp(values).then(async (i) => {
         await authenticate({ signingMessage: "Log in using Moralis" })
           .then((user) => {
-            console.log(user.get("ethAddress")); // save ethAddress to firebase upon signup and cross check it when signing in
+            setCurrentUser(user);
+            //console.log(user.get("ethAddress")); // save ethAddress to firebase upon signup and cross check it when signing in
             addUserToDB(i.user.uid, values.username, user.get("ethAddress"));
-            navigate("/"); //possible to pass props through navigation? pass user that is
+            //navigate("/"); //possible to pass props through navigation? pass user that is
           })
           .catch(function (error) {
             console.log(error);
@@ -44,6 +45,7 @@ const SignUp = () => {
         case "auth/weak-password":
           return setError("Password is too weak. Try adding more characters!");
         default:
+          console.log(err);
           return setError("Something is wrong... please try again later");
       }
     }
@@ -57,13 +59,17 @@ const SignUp = () => {
     const docExists = (await db.collection("user").doc(uid).get()).exists;
 
     if (!docExists) {
-      await db.collection("user").doc(uid).set({
-        username: username,
-        role: "customer",
-        ethAddress: address,
-        lastPaidDate: "invalid",
-        listeningLog: [],
-      });
+      await db
+        .collection("user")
+        .doc(uid)
+        .set({
+          username: username,
+          role: "customer",
+          ethAddress: address,
+          lastPaidDate: "invalid",
+          listeningLog: [],
+        })
+        .then(navigate("/")); //possible to pass props through navigation? pass user that is);
     } // add user to db
   };
   return !currentUser ? (

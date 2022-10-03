@@ -24,7 +24,7 @@ const Settings = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (userData.address !== user.get("ethAddress")) {
+      if (userData.ethAddress !== user.get("ethAddress")) {
         logout();
       }
     }
@@ -33,7 +33,8 @@ const Settings = () => {
   const navigate = useNavigate();
   return (
     <>
-      {isAuthenticated && userData.address === user.get("ethAddress") ? (
+      <h1>Username: {userData.username}</h1>
+      {isAuthenticated && userData.ethAddress === user.get("ethAddress") ? (
         <h1>Your Metamask wallet is currently connected.</h1>
       ) : (
         <h1>{error}</h1>
@@ -66,12 +67,12 @@ const Settings = () => {
                   .collection("user")
                   .doc(userData.id)
                   .update({ address: user.get("ethAddress") });*/
-                if (userData.address === user.get("ethAddress")) return;
+                if (userData.ethAddress === user.get("ethAddress")) return;
                 setError(
                   `The ethAddress connected does not correspond to your account's ethAddress. Try again.`
                 );
 
-                if (userData.address !== undefined) return;
+                if (userData.ethAddress !== undefined) return;
               })
               .catch(function (error) {
                 console.log(error);

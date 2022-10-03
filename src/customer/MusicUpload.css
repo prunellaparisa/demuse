@@ -13,3 +13,7 @@
 [class="ant-form-item-extra"] {
   color: white !important;
 }
+
+[class="ant-upload-span"] {
+  background-color: white !important;
+}

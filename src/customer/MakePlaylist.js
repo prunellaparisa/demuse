@@ -91,7 +91,7 @@ const MakePlaylist = () => {
     let temp = [];
     const options = {
       method: "GET",
-      url: "https://deep-index.moralis.io/api/v2/0x8c44E4ccC8c5991cBc9DBbEF19378377057E46B7/nft",
+      url: `https://deep-index.moralis.io/api/v2/${userData.ethAddress}/nft`,
       params: { chain: "mumbai", format: "decimal" },
       headers: { accept: "application/json", "X-API-Key": "test" },
     };
@@ -102,7 +102,9 @@ const MakePlaylist = () => {
         responseArr = response.data.result;
         responseArr.map(async (i) => {
           // access each token's id and uri
-          if (i.name === "demuseToken") {
+          // console.log("i.owner_of: " + i.owner_of);
+          // console.log("userData.ethAddress: " + userData.ethAddress);
+          if (i.name === "demuseToken" && i.owner_of === userData.ethAddress) {
             //temp.push(i.token_uri);
             //setOwnTokens((oldArray) => [...oldArray, i.token_uri]);
             let metadata = JSON.parse(i.metadata);
