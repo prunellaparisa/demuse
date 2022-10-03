@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useIPFS } from "./useIPFS";
 
-const useAudio = (url) => {
-  const {resolveLink} = useIPFS();
-  const [audio, setAudio] = useState(url);
+const useAudio = (tracks) => {
+  const { resolveLink } = useIPFS();
+  const [audio, setAudio] = useState(tracks);
   const [trackIndex, setTrackIndex] = useState(0);
   const [newSong, setNewSong] = useState(0);
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
-  const audioRef = useRef(new Audio(resolveLink(JSON.parse(audio[trackIndex].metadata).animation_url)));
-  
+  const audioRef = useRef(
+    new Audio(resolveLink(audio[trackIndex].animation_url))
+  );
+
   const intervalRef = useRef();
   const isReady = useRef(false);
 
@@ -34,13 +36,13 @@ const useAudio = (url) => {
 
   useEffect(() => {
     toggle();
-    setAudio(url);
-    if(trackIndex === 0){
-      setNewSong(newSong+1)
-    }else{
+    setAudio(tracks);
+    if (trackIndex === 0) {
+      setNewSong(newSong + 1);
+    } else {
       setTrackIndex(0);
     }
-  }, [url]); 
+  }, [tracks]); //tracks was url initially
 
   useEffect(() => {
     if (isPlaying) {
@@ -61,7 +63,7 @@ const useAudio = (url) => {
 
   useEffect(() => {
     audioRef.current.pause();
-    audioRef.current = new Audio(resolveLink(JSON.parse(audio[trackIndex].metadata).animation_url));
+    audioRef.current = new Audio(resolveLink(audio[trackIndex].animation_url));
     audioRef.current.volume = volume;
     setTrackProgress(Math.round(audioRef.current.currentTime));
     if (isReady.current) {
@@ -91,21 +93,32 @@ const useAudio = (url) => {
     clearInterval(intervalRef.current);
     audioRef.current.currentTime = value;
     setTrackProgress(audioRef.current.currentTime);
-  }
+  };
 
   const onSearchEnd = () => {
     if (!isPlaying) {
-        setIsPlaying(true);
-      }
-      startTimer();
-  } 
-
-  const onVolume = (vol) => {
-      setVolume(vol);
-      audioRef.current.volume = vol;
+      setIsPlaying(true);
+    }
+    startTimer();
   };
 
-  return [isPlaying, duration,toggle, toNextTrack, toPrevTrack, trackProgress, onSearch, onSearchEnd, onVolume, trackIndex];
+  const onVolume = (vol) => {
+    setVolume(vol);
+    audioRef.current.volume = vol;
+  };
+
+  return [
+    isPlaying,
+    duration,
+    toggle,
+    toNextTrack,
+    toPrevTrack,
+    trackProgress,
+    onSearch,
+    onSearchEnd,
+    onVolume,
+    trackIndex,
+  ];
 };
 
 export default useAudio;

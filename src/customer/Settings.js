@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Settings.css";
 import { Tabs, Button } from "antd";
@@ -7,10 +7,11 @@ import { useUserData } from "../global/auth/UserData";
 import { useMoralis } from "react-moralis";
 import { db } from "../utils/firebase";
 
-// technically a person can own multiple wallet addresses. look into that.
+// an account can currently only hold one wallet address
 const Settings = () => {
   const { signOut } = useAuth();
   const { userData } = useUserData();
+
   const {
     authenticate,
     isAuthenticated,
@@ -19,15 +20,25 @@ const Settings = () => {
     account,
     logout,
   } = useMoralis();
+  const [error, setError] = useState("Connect to your Metamask wallet!");
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (userData.address !== user.get("ethAddress")) {
+        logout();
+      }
+    }
+  }, [user]);
 
   const navigate = useNavigate();
   return (
     <>
-      {isAuthenticated ? (
-        <h1>Your Metamask wallet address is {user.get("ethAddress")}</h1>
+      {isAuthenticated && userData.address === user.get("ethAddress") ? (
+        <h1>Your Metamask wallet is currently connected.</h1>
       ) : (
-        <h1>Connect to your Metamask wallet!</h1>
+        <h1>{error}</h1>
       )}
+
       <Button
         type="dashed"
         size={"default"}
@@ -50,12 +61,17 @@ const Settings = () => {
               signingMessage: "Log in using Moralis",
             })
               .then(async (user) => {
-                if (userData.address !== undefined) return;
                 // add ethAddress to firebase
-                await db
+                /*await db
                   .collection("user")
                   .doc(userData.id)
-                  .update({ address: user.get("ethAddress") });
+                  .update({ address: user.get("ethAddress") });*/
+                if (userData.address === user.get("ethAddress")) return;
+                setError(
+                  `The ethAddress connected does not correspond to your account's ethAddress. Try again.`
+                );
+
+                if (userData.address !== undefined) return;
               })
               .catch(function (error) {
                 console.log(error);

@@ -45,10 +45,11 @@ const MakePlaylist = () => {
     getOwnTokens();
   }, []);
 
-  const addAlbumToDB = async (type, title, tracks) => {
+  const addAlbumToDB = async (type, title, image, tracks) => {
     await db.collection("tracklist").add({
       type: type,
       title: title,
+      image: image,
       tracks: tracks,
       creator: userData.id,
     });
@@ -59,10 +60,15 @@ const MakePlaylist = () => {
     //console.log("Received values of form: ", values);
     //console.log("values.album_name: " + values.album_name);
     //console.log("values.select_multiple: " + values.select_multiple);
+    let found = ownTokens.find((i) => i.uri === values.select_multiple[0]);
+    let image = found.image;
     //console.log("userData.id: " + userData.id);
-    await addAlbumToDB("album", values.album_name, values.select_multiple).then(
-      message.success("Made album successfully!")
-    );
+    await addAlbumToDB(
+      "album",
+      values.album_name,
+      image,
+      values.select_multiple
+    ).then(message.success("Made album successfully!"));
   };
 
   const makeAlbumForm = () => {
@@ -94,7 +100,7 @@ const MakePlaylist = () => {
       .request(options)
       .then(function (response) {
         responseArr = response.data.result;
-        responseArr.map((i) => {
+        responseArr.map(async (i) => {
           // access each token's id and uri
           if (i.name === "demuseToken") {
             //temp.push(i.token_uri);
@@ -108,8 +114,11 @@ const MakePlaylist = () => {
             );*/
             setOwnTokens((oldArray) => [
               ...oldArray,
-              { name: metadata.name, uri: i.token_uri },
+              { name: metadata.name, uri: i.token_uri, image: metadata.image },
             ]);
+            //let obj = await fetch(i.token_uri);
+            //let json = await obj.json();
+            //console.log("json: " + JSON.stringify(json));
           }
         });
       })

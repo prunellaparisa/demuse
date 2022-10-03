@@ -625,7 +625,7 @@ const MusicMint = () => {
                 type="dashed"
                 size={"default"}
                 onClick={() => {
-                  console.log("Delete!");
+                  deleteSubmission(doc.id);
                 }}
               >
                 Delete Submission

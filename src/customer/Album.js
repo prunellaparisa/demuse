@@ -3,45 +3,41 @@ import { useAlbum } from "../hooks/useAlbum";
 import { useLocation } from "react-router";
 import "./Album.css";
 import Opensea from "../images/opensea.png";
+import { useIPFS } from "../hooks/useIPFS";
 import { ClockCircleOutlined } from "@ant-design/icons";
 
 const Album = ({ setNftAlbum }) => {
-  const { state: albumDetails } = useLocation();
-  const { album } = useAlbum(albumDetails.contract);
-
-  // is album metadata directly stored in the blockchain for this original project?
-
+  const { state: album } = useLocation();
+  const { resolveLink } = useIPFS();
+  //const { album } = useAlbum(albumDetails.contract); // album is straight from firebase
+  // for the setNftAlbum, probably use album.tracklist array? yes indeed
   return (
     <>
       <div className="albumContent">
         <div className="topBan">
           <img
-            src={albumDetails.image}
+            src={resolveLink(album.image)}
             alt="albumcover"
             className="albumCover"
           ></img>
           <div className="albumDeets">
-            <div>ALBUM</div>
-            <div className="title">{albumDetails.title}</div>
-            <div className="artist">
-              {album && JSON.parse(album[0].metadata).artist}
-            </div>
+            <div>{album.type.toUpperCase()}</div>
+            <div className="title">{album.title}</div>
+            <div className="artist">{album && album.tracks[0].artist}</div>
             <div>
-              {album && JSON.parse(album[0].metadata).year} •{" "}
-              {album && album.length} Songs
+              {album && album.tracks[0].year} • {album && album.tracks.length}{" "}
+              Songs
             </div>
           </div>
         </div>
         <div className="topBan">
-          <div className="playButton" onClick={() => setNftAlbum(album)}>
+          <div className="playButton" onClick={() => setNftAlbum(album.tracks)}>
             PLAY
           </div>
           <div
             className="openButton"
             onClick={() =>
-              window.open(
-                `https://testnets.opensea.io/assets/mumbai/${albumDetails.contract}/1`
-              )
+              window.open(`https://testnets.opensea.io/collection/demusetoken`)
             }
           >
             OpenSea
@@ -56,8 +52,7 @@ const Album = ({ setNftAlbum }) => {
           </div>
         </div>
         {album &&
-          album.map((nft, i) => {
-            nft = JSON.parse(nft.metadata);
+          album.tracks.map((track, i) => {
             return (
               <>
                 <div className="tableContent">
@@ -66,9 +61,9 @@ const Album = ({ setNftAlbum }) => {
                     className="titleHeader"
                     style={{ color: "rgb(205, 203, 203)" }}
                   >
-                    {nft.name}
+                    {track.name}
                   </div>
-                  <div className="numberHeader">{nft.duration}</div>
+                  <div className="numberHeader">{track.duration}</div>
                 </div>
               </>
             );

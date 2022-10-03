@@ -72,7 +72,7 @@ const App = () => {
                       <MusicUpload />
                       <Layout>
                         <Footer className="footer">
-                          {nftAlbum && <Player url={nftAlbum} />}
+                          {nftAlbum && <Player tracks={nftAlbum} />}
                         </Footer>
                       </Layout>
                     </PrivateRoute>
@@ -87,7 +87,7 @@ const App = () => {
                       <Album setNftAlbum={setNftAlbum} />
                       <Layout>
                         <Footer className="footer">
-                          {nftAlbum && <Player url={nftAlbum} />}
+                          {nftAlbum && <Player tracks={nftAlbum} />}
                         </Footer>
                       </Layout>
                     </PrivateRoute>

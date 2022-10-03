@@ -10,7 +10,7 @@ import {
   PauseCircleFilled,
 } from "@ant-design/icons";
 
-const Player = ({ url }) => {
+const Player = ({ tracks }) => {
   const { resolveLink } = useIPFS();
   const [
     playing,
@@ -23,7 +23,7 @@ const Player = ({ url }) => {
     onSearchEnd,
     onVolume,
     trackIndex,
-  ] = useAudio(url);
+  ] = useAudio(tracks);
 
   const minSec = (secs) => {
     const minutes = Math.floor(secs / 60);
@@ -42,14 +42,12 @@ const Player = ({ url }) => {
       >
         <img
           className="cover"
-          src={resolveLink(JSON.parse(url[trackIndex].metadata).image)}
+          src={resolveLink(tracks[trackIndex].image)}
           alt="currentCover"
         />
         <div>
-          <div className="songTitle">
-            {JSON.parse(url[trackIndex].metadata).name}
-          </div>
-          <div className="songAlbum">{url[trackIndex].name}</div>
+          <div className="songTitle">{tracks[trackIndex].name}</div>
+          <div className="songAlbum">{tracks.title}</div>
         </div>
       </div>
       <div>
