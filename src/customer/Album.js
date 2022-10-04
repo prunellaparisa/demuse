@@ -67,7 +67,7 @@ const Album = ({ setNftAlbum, setIndex }) => {
               <>
                 <div
                   className="tableContent"
-                  onClick={() => {
+                  onDoubleClick={() => {
                     setNftAlbum(album.tracks);
                     setIndex(i);
                   }}

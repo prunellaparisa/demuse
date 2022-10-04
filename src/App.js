@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import SignIn from "./global/signin/SignIn";
 import SignUp from "./global/signin/SignUp";
 import Album from "./customer/Album";
@@ -49,6 +49,15 @@ const App = () => {
 
   const [nftAlbum, setNftAlbum] = useState();
   const [index, setIndex] = useState(0);
+  const location = useLocation();
+  useEffect(() => {
+    //console.log("location.pathname: " + location.pathname);
+    let paths = ["/", "/album"];
+    if (!paths.includes(location.pathname)) {
+      setNftAlbum();
+      setIndex(0);
+    }
+  }, [location.pathname]);
 
   return (
     <>
@@ -67,33 +76,11 @@ const App = () => {
                 }
               />
               <Route
-                path="/upload"
-                element={
-                  <UserDataProvider>
-                    <PrivateRoute role={role.C}>
-                      <MusicUpload />
-                      <Layout>
-                        <Footer className="footer">
-                          {nftAlbum && <Player tracks={nftAlbum} />}
-                        </Footer>
-                      </Layout>
-                    </PrivateRoute>
-                  </UserDataProvider>
-                }
-              />
-              <Route
                 path="/album"
                 element={
                   <UserDataProvider>
                     <PrivateRoute role={role.C}>
                       <Album setNftAlbum={setNftAlbum} setIndex={setIndex} />
-                      <Layout>
-                        <Footer className="footer">
-                          {nftAlbum && (
-                            <Player tracks={nftAlbum} index={index} />
-                          )}
-                        </Footer>
-                      </Layout>
                     </PrivateRoute>
                   </UserDataProvider>
                 }
@@ -102,6 +89,9 @@ const App = () => {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/error" element={<ErrorRoute />} />
             </Routes>
+            <Footer className="footer">
+              {nftAlbum && <Player tracks={nftAlbum} index={index} />}
+            </Footer>
           </Content>
         </Layout>
       </AuthProvider>

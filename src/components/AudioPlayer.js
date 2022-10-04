@@ -18,7 +18,6 @@ const Player = ({ tracks, index }) => {
     toggle,
     toNextTrack,
     toPrevTrack,
-    selectTrack,
     trackProgress,
     onSearch,
     onSearchEnd,

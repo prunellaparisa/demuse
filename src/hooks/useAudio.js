@@ -34,14 +34,6 @@ const useAudio = (tracks, index) => {
     }
   };
 
-  const selectTrack = (index) => {
-    if (trackIndex === index) {
-      setTrackIndex(audio.length - 1);
-    } else {
-      setTrackIndex(index);
-    }
-  };
-
   useEffect(() => {
     toggle();
     setAudio(tracks);
@@ -121,7 +113,6 @@ const useAudio = (tracks, index) => {
     toggle,
     toNextTrack,
     toPrevTrack,
-    selectTrack,
     trackProgress,
     onSearch,
     onSearchEnd,
