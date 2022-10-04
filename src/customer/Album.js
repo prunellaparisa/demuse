@@ -1,13 +1,14 @@
 import React from "react";
 import { useAlbum } from "../hooks/useAlbum";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import "./Album.css";
 import Opensea from "../images/opensea.png";
 import { useIPFS } from "../hooks/useIPFS";
 import { ClockCircleOutlined } from "@ant-design/icons";
 
-const Album = ({ setNftAlbum }) => {
+const Album = ({ setNftAlbum, setIndex }) => {
   const { state: album } = useLocation();
+  const navigate = useNavigate();
   const { resolveLink } = useIPFS();
   //const { album } = useAlbum(albumDetails.contract); // album is straight from firebase
   // for the setNftAlbum, probably use album.tracklist array? yes indeed
@@ -31,7 +32,13 @@ const Album = ({ setNftAlbum }) => {
           </div>
         </div>
         <div className="topBan">
-          <div className="playButton" onClick={() => setNftAlbum(album.tracks)}>
+          <div
+            className="playButton"
+            onClick={() => {
+              setNftAlbum(album.tracks);
+              setIndex(0);
+            }}
+          >
             PLAY
           </div>
           <div
@@ -42,6 +49,9 @@ const Album = ({ setNftAlbum }) => {
           >
             OpenSea
             <img src={Opensea} className="openLogo" />
+          </div>
+          <div className="openButton" onClick={() => navigate("/")}>
+            Go Home
           </div>
         </div>
         <div className="tableHeader">
@@ -55,7 +65,13 @@ const Album = ({ setNftAlbum }) => {
           album.tracks.map((track, i) => {
             return (
               <>
-                <div className="tableContent">
+                <div
+                  className="tableContent"
+                  onClick={() => {
+                    setNftAlbum(album.tracks);
+                    setIndex(i);
+                  }}
+                >
                   <div className="numberHeader">{i + 1}</div>
                   <div
                     className="titleHeader"

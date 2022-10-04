@@ -48,6 +48,8 @@ const App = () => {
           </Sider>*/
 
   const [nftAlbum, setNftAlbum] = useState();
+  const [index, setIndex] = useState(0);
+
   return (
     <>
       <AuthProvider>
@@ -84,10 +86,12 @@ const App = () => {
                 element={
                   <UserDataProvider>
                     <PrivateRoute role={role.C}>
-                      <Album setNftAlbum={setNftAlbum} />
+                      <Album setNftAlbum={setNftAlbum} setIndex={setIndex} />
                       <Layout>
                         <Footer className="footer">
-                          {nftAlbum && <Player tracks={nftAlbum} />}
+                          {nftAlbum && (
+                            <Player tracks={nftAlbum} index={index} />
+                          )}
                         </Footer>
                       </Layout>
                     </PrivateRoute>

@@ -10,7 +10,7 @@ import {
   PauseCircleFilled,
 } from "@ant-design/icons";
 
-const Player = ({ tracks }) => {
+const Player = ({ tracks, index }) => {
   const { resolveLink } = useIPFS();
   const [
     playing,
@@ -18,12 +18,13 @@ const Player = ({ tracks }) => {
     toggle,
     toNextTrack,
     toPrevTrack,
+    selectTrack,
     trackProgress,
     onSearch,
     onSearchEnd,
     onVolume,
     trackIndex,
-  ] = useAudio(tracks);
+  ] = useAudio(tracks, index);
 
   const minSec = (secs) => {
     const minutes = Math.floor(secs / 60);

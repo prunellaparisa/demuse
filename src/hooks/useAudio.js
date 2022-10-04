@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useIPFS } from "./useIPFS";
 
-const useAudio = (tracks) => {
+const useAudio = (tracks, index) => {
   const { resolveLink } = useIPFS();
   const [audio, setAudio] = useState(tracks);
   const [trackIndex, setTrackIndex] = useState(0);
@@ -34,15 +34,23 @@ const useAudio = (tracks) => {
     }
   };
 
+  const selectTrack = (index) => {
+    if (trackIndex === index) {
+      setTrackIndex(audio.length - 1);
+    } else {
+      setTrackIndex(index);
+    }
+  };
+
   useEffect(() => {
     toggle();
     setAudio(tracks);
-    if (trackIndex === 0) {
+    if (trackIndex === index) {
       setNewSong(newSong + 1);
     } else {
-      setTrackIndex(0);
+      setTrackIndex(index);
     }
-  }, [tracks]); //tracks was url initially
+  }, [tracks, index]); //tracks was url initially
 
   useEffect(() => {
     if (isPlaying) {
@@ -113,6 +121,7 @@ const useAudio = (tracks) => {
     toggle,
     toNextTrack,
     toPrevTrack,
+    selectTrack,
     trackProgress,
     onSearch,
     onSearchEnd,
