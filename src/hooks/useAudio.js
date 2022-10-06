@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useIPFS } from "./useIPFS";
+import { db, fieldValue } from "../utils/firebase";
 
-const useAudio = (tracks, index) => {
+const useAudio = (tracks, index, paymentAddresses, userData) => {
   const { resolveLink } = useIPFS();
   const [audio, setAudio] = useState(tracks);
   const [trackIndex, setTrackIndex] = useState(0);
@@ -78,15 +79,41 @@ const useAudio = (tracks, index) => {
   const toggle = () => setIsPlaying(!isPlaying);
 
   const startTimer = () => {
+    let updateDBCount = 0;
+    let threshold = 5;
+    let seconds = 0; // seconds have to reach threshold number to count as one listening count
     clearInterval(intervalRef.current);
+    //console.log("trackIndex: " + trackIndex);
+    //console.log("paymentAddresses[trackIndex]: " + paymentAddresses[trackIndex]);
+    //console.log("userData.username: " + userData.username);
+    //console.log("userData.listeningLog: " + userData.listeningLog); // TODO how to constantly refresh .listeningLog
+    //updateListeningLog();
 
     intervalRef.current = setInterval(() => {
       if (audioRef.current.ended) {
         toNextTrack();
       } else {
         setTrackProgress(Math.round(audioRef.current.currentTime));
+        seconds++;
+        if (seconds > threshold && updateDBCount === 0) {
+          // record one listening count to the artist TODO
+          updateListeningLog();
+          updateDBCount++;
+        }
       }
     }, [1000]);
+  };
+
+  const updateListeningLog = async () => {
+    let field = `listeningLog.${paymentAddresses[trackIndex]}`;
+    if (userData.id === null) return;
+    await db
+      .collection("user")
+      .doc(userData.id)
+      .update({
+        [field]: fieldValue.increment(1),
+      })
+      .then(console.log("updated listening log!"));
   };
 
   const onSearch = (value) => {

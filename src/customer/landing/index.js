@@ -9,15 +9,28 @@ import Settings from "../Settings";
 import MusicUpload from "../MusicUpload";
 import MusicMint from "../MusicMint";
 import MakeAlbum from "../MakePlaylist";
+import { useMoralis } from "react-moralis";
+import { useUserData } from "../../global/auth/UserData";
 const { TabPane } = Tabs;
 
 // image loading from ipfs is sooooo slow fr
 const CustomerLanding = () => {
   const navigate = useNavigate();
   const { resolveLink } = useIPFS();
+  const { userData } = useUserData();
+  const {
+    authenticate,
+    isAuthenticated,
+    isAuthenticating,
+    user,
+    account,
+    logout,
+  } = useMoralis();
   const [albums, setAlbums] = useState([]);
   const [albumsUI, setAlbumsUI] = useState([]);
+  const [error, setError] = useState([]);
   const [loading, setLoading] = useState(true);
+  let count = 0;
   // instead of hard coding the library, retrieve it from the firebase.
   // useEffect get all albums = const library
   // parse all album tracks into an object properly so that it is easily accessible later on
@@ -36,6 +49,15 @@ const CustomerLanding = () => {
     }
   }, [albums]);
 
+  const connectWallet = () => {
+    authenticate();
+    if (userData.ethAddress !== user.get("ethAddress")) {
+      logout();
+    } else {
+      setError();
+    }
+  };
+
   // in future development, would probably get a limited amount of albums based on popularity
   const getAllAlbums = async () => {
     setAlbums([]);
@@ -53,16 +75,23 @@ const CustomerLanding = () => {
   // albums don't come out in order; temporarily solved it
   const generateAlbumsUI = (albums) => {
     let temp = [];
+    // let rawTrackURLs = [];
     albums.map(async (e) => {
       // console.log("e: " + JSON.stringify(e)); //attempt to make metadata accessible here
       let tracksMetadata = [];
       //let count = 0;
       let index = 0;
       // e.tracks is in order but tracksMetadata is not; now it is
+      // rawTrackURLs = e.tracks; // something wrong here
       await e.tracks.map(async (track) => {
+        e.rawTrackURLs = e.tracks;
+        let updatedTrackURL = track.replace(
+          "https://ipfs.moralis.io:2053",
+          "https://cf-ipfs.com"
+        );
         let id = index;
         index++;
-        let json = await (await fetch(track)).json();
+        let json = await (await fetch(updatedTrackURL)).json();
         tracksMetadata.push(json); // the array pushing is not in order
         json.id = id; // the id made just before the json is attached to help with rearranging
         //console.log("json.id: " + json.id);
@@ -74,6 +103,9 @@ const CustomerLanding = () => {
           tracksMetadata.sort((a, b) => (a.id > b.id ? 1 : -1)); // rearrange tracks based on id
           //tracksMetadata.map((i) => console.log("yo: " + i.name));
           //console.log("tracksMetadata.length:" + tracksMetadata.length);
+          // console.log("rawTrackURLs: " + rawTrackURLs);
+          //e.rawTrackURLs = e.tracks;
+          //console.log("e.tracks: " + e.tracks);
           e.tracks = tracksMetadata;
           //if ()
           //console.log("e.tracks[0]:" + JSON.stringify(e.tracks[0]));
@@ -113,6 +145,18 @@ const CustomerLanding = () => {
       <Tabs defaultActiveKey="1" centered>
         <TabPane tab="FEATURED" key="1">
           <h1 className="featuredTitle">Today Is The Day</h1>
+          {isAuthenticated && userData.ethAddress === user.get("ethAddress") ? (
+            <p>Your Metamask wallet is currently connected.</p>
+          ) : (
+            <div>
+              <p>
+                There's an error connecting to your wallet. Please try again.
+              </p>
+              <Button type="primary" onClick={() => connectWallet()}>
+                Connect Wallet
+              </Button>
+            </div>
+          )}
           <Spin spinning={loading}>
             <div className="albums">{albumsUI}</div>
           </Spin>

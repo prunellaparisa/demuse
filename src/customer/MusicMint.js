@@ -16,8 +16,7 @@ import axios from "axios";
 
 // retrieve approved submission, have a mint button for them, and change status to "minted"
 const MusicMint = () => {
-  const { user, enableWeb3, isWeb3Enabled } = useMoralis();
-  const { logout } = useMoralis();
+  const { user, enableWeb3, isWeb3Enabled, logout } = useMoralis();
   const { runContractFunction, data, error, isLoading, isFetching } =
     useWeb3Contract();
   const { resolveLink } = useIPFS();

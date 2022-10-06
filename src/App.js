@@ -46,9 +46,10 @@ const App = () => {
               </div>
             </div>
           </Sider>*/
-
   const [nftAlbum, setNftAlbum] = useState();
+  const [paymentAddresses, setPaymentAddresses] = useState();
   const [index, setIndex] = useState(0);
+  const [userData, setUserData] = useState();
   const location = useLocation();
   useEffect(() => {
     //console.log("location.pathname: " + location.pathname);
@@ -80,7 +81,12 @@ const App = () => {
                 element={
                   <UserDataProvider>
                     <PrivateRoute role={role.C}>
-                      <Album setNftAlbum={setNftAlbum} setIndex={setIndex} />
+                      <Album
+                        setNftAlbum={setNftAlbum}
+                        setIndex={setIndex}
+                        setPaymentAddresses={setPaymentAddresses}
+                        setUserData={setUserData}
+                      />
                     </PrivateRoute>
                   </UserDataProvider>
                 }
@@ -90,7 +96,14 @@ const App = () => {
               <Route path="/error" element={<ErrorRoute />} />
             </Routes>
             <Footer className="footer">
-              {nftAlbum && <Player tracks={nftAlbum} index={index} />}
+              {nftAlbum && (
+                <Player
+                  tracks={nftAlbum}
+                  index={index}
+                  paymentAddresses={paymentAddresses}
+                  userData={userData}
+                />
+              )}
             </Footer>
           </Content>
         </Layout>
