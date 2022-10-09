@@ -24,6 +24,8 @@ const CustomerLanding = () => {
     isAuthenticating,
     user,
     account,
+    isWeb3Enabled,
+    enableWeb3,
     logout,
   } = useMoralis();
   const [albums, setAlbums] = useState([]);
@@ -36,6 +38,14 @@ const CustomerLanding = () => {
   // parse all album tracks into an object properly so that it is easily accessible later on
 
   useEffect(() => {
+    if (!isWeb3Enabled) {
+      enableWeb3();
+    }
+    // TODO
+    // 1. check if user has paid subscription fee yet.
+    // 2. if end of the month, distribute fee to artists using listening log, clear listening log,
+    // pay subscription fee again.
+    // 3. if paid, getAllAlbums().
     getAllAlbums();
   }, []);
 
@@ -50,12 +60,11 @@ const CustomerLanding = () => {
   }, [albums]);
 
   const connectWallet = () => {
-    authenticate();
-    if (userData.ethAddress !== user.get("ethAddress")) {
-      logout();
-    } else {
-      setError();
-    }
+    authenticate().then(() => {
+      if (userData.ethAddress !== user.get("ethAddress")) {
+        logout();
+      }
+    });
   };
 
   // in future development, would probably get a limited amount of albums based on popularity
@@ -87,7 +96,7 @@ const CustomerLanding = () => {
         e.rawTrackURLs = e.tracks;
         let updatedTrackURL = track.replace(
           "https://ipfs.moralis.io:2053",
-          "https://cf-ipfs.com"
+          "https://demuse.infura-ipfs.io" // made a paid dedicated gateway. don't go over 5GB a month.
         );
         let id = index;
         index++;
@@ -145,7 +154,9 @@ const CustomerLanding = () => {
       <Tabs defaultActiveKey="1" centered>
         <TabPane tab="FEATURED" key="1">
           <h1 className="featuredTitle">Today Is The Day</h1>
-          {isAuthenticated && userData.ethAddress === user.get("ethAddress") ? (
+          {isWeb3Enabled &&
+          isAuthenticated &&
+          userData.ethAddress === user.get("ethAddress") ? (
             <p>Your Metamask wallet is currently connected.</p>
           ) : (
             <div>

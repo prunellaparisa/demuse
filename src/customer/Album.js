@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useAlbum } from "../hooks/useAlbum";
 import { useLocation, useNavigate } from "react-router";
 import "./Album.css";
 import Opensea from "../images/opensea.png";

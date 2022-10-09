@@ -96,7 +96,7 @@ const useAudio = (tracks, index, paymentAddresses, userData) => {
         setTrackProgress(Math.round(audioRef.current.currentTime));
         seconds++;
         if (seconds > threshold && updateDBCount === 0) {
-          // record one listening count to the artist TODO
+          // record one listening count to the artist
           updateListeningLog();
           updateDBCount++;
         }
