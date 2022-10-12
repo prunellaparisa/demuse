@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./index.css";
-import { Tabs, Button, Spin } from "antd";
+import { Tabs, Button, Spin, Modal } from "antd";
 import { library } from "../../helpers/albumList";
 import { db } from "../../utils/firebase";
 import { useIPFS } from "../../hooks/useIPFS";
@@ -9,7 +9,8 @@ import Settings from "../Settings";
 import MusicUpload from "../MusicUpload";
 import MusicMint from "../MusicMint";
 import MakeAlbum from "../MakePlaylist";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useWeb3Contract } from "react-moralis";
+import { ethers } from "ethers";
 import { useUserData } from "../../global/auth/UserData";
 const { TabPane } = Tabs;
 
@@ -21,17 +22,21 @@ const CustomerLanding = () => {
   const {
     authenticate,
     isAuthenticated,
-    isAuthenticating,
     user,
-    account,
     isWeb3Enabled,
     enableWeb3,
     logout,
   } = useMoralis();
+  const { runContractFunction, data, error, isLoading, isFetching } =
+    useWeb3Contract();
   const [albums, setAlbums] = useState([]);
   const [albumsUI, setAlbumsUI] = useState([]);
-  const [error, setError] = useState([]);
+  //Set dates
+  var today = new Date();
+  var priorDate = new Date(new Date().setDate(today.getDate() - 30));
+  // const [error, setError] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [paid, setPaid] = useState(false);
   let count = 0;
   // instead of hard coding the library, retrieve it from the firebase.
   // useEffect get all albums = const library
@@ -41,29 +46,373 @@ const CustomerLanding = () => {
     if (!isWeb3Enabled) {
       enableWeb3();
     }
+    if (
+      compareTime(new Date(userData.lastPaidDate.seconds * 1000), priorDate)
+    ) {
+      // if last paid date was within the last 30 days
+      //console.log("333");
+      setPaid(true);
+      getAllAlbums();
+    }
     // TODO
     // 1. check if user has paid subscription fee yet.
     // 2. if end of the month, distribute fee to artists using listening log, clear listening log,
     // pay subscription fee again.
     // 3. if paid, getAllAlbums().
-    getAllAlbums();
+    //checkSubscription();
+    //getAllAlbums();
   }, []);
 
   useEffect(() => {
     if (albums.length > 0) {
       generateAlbumsUI(albums);
     } else if (albums.length === albumsUI.length) {
+      // albumsUI takes time
       setLoading(false);
     } else {
       setAlbumsUI(<h1>Nothing to play here!</h1>);
     }
   }, [albums]);
 
+  // TODO
+  const checkSubscription = async () => {
+    if (userData.lastPaidDate === "invalid") {
+      // get user to pay, adjust lastPaidDate to today, getAllAlbums()
+      //console.log("111");
+      // TODO popup asking to pay. once successful, adjust lastPaidDate to today, getAllAlbums()
+      updateLastPaidDate();
+      setPaid(true);
+      getAllAlbums();
+    } else if (
+      !compareTime(new Date(userData.lastPaidDate.seconds * 1000), priorDate)
+    ) {
+      // if lastPaidDate was more than 30 days ago, distribute pay to artists, clear listening log,
+      // get user to pay, adjust lastPaidDate to today, getAllAlbums()
+      //console.log("222");
+      distributePayment();
+      // TODO distribute pay, clear log,
+      // popup asking to pay. once successful, adjust lastPaidDate to today, getAllAlbums()
+    }
+  };
+
+  const compareTime = (time1, time2) => {
+    return new Date(time1) > new Date(time2); // true if time1 is later
+  };
+
+  const paySubscription = async () => {
+    if (userData.ethAddress !== user.get("ethAddress")) return;
+    if (!isWeb3Enabled) {
+      console.log("web3 not enabled");
+      //await enableWeb3();
+    }
+    const options = {
+      chain: "mumbai",
+      contractAddress: "0xC41d23A83b7718bdf8c247D1E4772Cd820F81f60",
+      functionName: "paySubscriptionFee",
+      abi: [
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "LogTransfer",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "previousOwner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address payable[]",
+              name: "wallets",
+              type: "address[]",
+            },
+            {
+              internalType: "uint256[]",
+              name: "frequency",
+              type: "uint256[]",
+            },
+          ],
+          name: "distributeSubscriptionFee",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "paySubscriptionFee",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_fee",
+              type: "uint256",
+            },
+          ],
+          name: "setSubscriptionFee",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      msgValue: ethers.utils.parseEther((0.001).toString()),
+    };
+    await runContractFunction({ params: options }).then((i) => {
+      if (typeof i === "object") {
+        checkSubscription();
+      }
+    });
+  };
+
+  const distributePayment = async () => {
+    if (userData.ethAddress !== user.get("ethAddress")) return;
+    if (!isWeb3Enabled) {
+      console.log("web3 not enabled");
+      //await enableWeb3();
+    }
+    let wallets = Object.keys(userData.listeningLog).map((key) => key);
+    let frequency = Object.keys(userData.listeningLog).map(
+      (key) => userData.listeningLog[key]
+    );
+    let filteredWallets = [];
+    let targetIndex = 0;
+    wallets.map((i) => {
+      // match wallet address (case insensitive)
+      if (
+        i.localeCompare(userData.ethAddress, undefined, {
+          sensitivity: "base",
+        }) // if address is not my address, add the address in the array to distribute
+      ) {
+        filteredWallets.push(i);
+      } else {
+        targetIndex = wallets.indexOf(i);
+      }
+    });
+    let filteredFreq = frequency.filter(
+      (item) => frequency.indexOf(item) !== targetIndex
+    );
+    const options = {
+      chain: "mumbai",
+      contractAddress: "0xC41d23A83b7718bdf8c247D1E4772Cd820F81f60",
+      functionName: "distributeSubscriptionFee",
+      abi: [
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "LogTransfer",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "previousOwner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address payable[]",
+              name: "wallets",
+              type: "address[]",
+            },
+            {
+              internalType: "uint256[]",
+              name: "frequency",
+              type: "uint256[]",
+            },
+          ],
+          name: "distributeSubscriptionFee",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "paySubscriptionFee",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_fee",
+              type: "uint256",
+            },
+          ],
+          name: "setSubscriptionFee",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      params: { wallets: filteredWallets, frequency: filteredFreq }, // address[] wallets, uint[] frequency
+    };
+    await runContractFunction({ params: options }).then((i) => {
+      if (typeof i === "object") {
+        console.log(JSON.stringify(i));
+        //clearListeningLog(); uncomment all of these
+        //updateLastPaidDate();
+        //setPaid(true);
+        //getAllAlbums();
+      }
+    });
+  };
+
   const connectWallet = () => {
     authenticate().then(() => {
       if (userData.ethAddress !== user.get("ethAddress")) {
         logout();
       }
+    });
+  };
+
+  const updateLastPaidDate = async () => {
+    await db.collection("user").doc(userData.id).update({
+      lastPaidDate: today,
+    });
+  };
+
+  const clearListeningLog = async () => {
+    await db.collection("user").doc(userData.id).update({
+      listeningLog: [],
     });
   };
 
@@ -139,6 +488,7 @@ const CustomerLanding = () => {
     });
   };
 
+  // paySubscription
   /*{library.map((e) => (
     <Link to="/album" state={e} className="albumSelection">
       <img
@@ -157,7 +507,21 @@ const CustomerLanding = () => {
           {isWeb3Enabled &&
           isAuthenticated &&
           userData.ethAddress === user.get("ethAddress") ? (
-            <p>Your Metamask wallet is currently connected.</p>
+            <div>
+              <p>Your Metamask wallet is currently connected.</p>
+              {paid ? (
+                <Spin spinning={loading}>
+                  <div className="albums">{albumsUI}</div>
+                </Spin>
+              ) : (
+                <div>
+                  <h1>Please pay to continue using demuse services.</h1>
+                  <Button type="primary" onClick={() => paySubscription()}>
+                    Pay Subscription
+                  </Button>
+                </div>
+              )}
+            </div>
           ) : (
             <div>
               <p>
@@ -168,9 +532,6 @@ const CustomerLanding = () => {
               </Button>
             </div>
           )}
-          <Spin spinning={loading}>
-            <div className="albums">{albumsUI}</div>
-          </Spin>
         </TabPane>
         <TabPane tab="MUSIC UPLOAD" key="2">
           <MusicUpload />
