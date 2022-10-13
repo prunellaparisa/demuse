@@ -74,12 +74,9 @@ const CustomerLanding = () => {
     }
   }, [albums]);
 
-  // TODO
   const checkSubscription = async () => {
     if (userData.lastPaidDate === "invalid") {
       // get user to pay, adjust lastPaidDate to today, getAllAlbums()
-      //console.log("111");
-      // TODO popup asking to pay. once successful, adjust lastPaidDate to today, getAllAlbums()
       updateLastPaidDate();
       setPaid(true);
       getAllAlbums();
@@ -88,10 +85,7 @@ const CustomerLanding = () => {
     ) {
       // if lastPaidDate was more than 30 days ago, distribute pay to artists, clear listening log,
       // get user to pay, adjust lastPaidDate to today, getAllAlbums()
-      //console.log("222");
       distributePayment();
-      // TODO distribute pay, clear log,
-      // popup asking to pay. once successful, adjust lastPaidDate to today, getAllAlbums()
     }
   };
 
@@ -262,6 +256,13 @@ const CustomerLanding = () => {
     let filteredFreq = frequency.filter(
       (item) => frequency.indexOf(item) !== targetIndex
     );
+    if (filteredWallets.length === 0) {
+      clearListeningLog();
+      updateLastPaidDate();
+      setPaid(true);
+      getAllAlbums();
+      return;
+    }
     const options = {
       chain: "mumbai",
       contractAddress: "0xC41d23A83b7718bdf8c247D1E4772Cd820F81f60",
@@ -387,11 +388,10 @@ const CustomerLanding = () => {
     };
     await runContractFunction({ params: options }).then((i) => {
       if (typeof i === "object") {
-        console.log(JSON.stringify(i));
-        //clearListeningLog(); uncomment all of these
-        //updateLastPaidDate();
-        //setPaid(true);
-        //getAllAlbums();
+        clearListeningLog();
+        updateLastPaidDate();
+        setPaid(true);
+        getAllAlbums();
       }
     });
   };
@@ -508,7 +508,10 @@ const CustomerLanding = () => {
           isAuthenticated &&
           userData.ethAddress === user.get("ethAddress") ? (
             <div>
-              <p>Your Metamask wallet is currently connected.</p>
+              <p>
+                Your Metamask wallet is currently connected. Address:{" "}
+                {user.get("ethAddress")}
+              </p>
               {paid ? (
                 <Spin spinning={loading}>
                   <div className="albums">{albumsUI}</div>

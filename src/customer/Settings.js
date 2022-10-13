@@ -35,7 +35,10 @@ const Settings = () => {
     <>
       <h1>Username: {userData.username}</h1>
       {isAuthenticated && userData.ethAddress === user.get("ethAddress") ? (
-        <h1>Your Metamask wallet is currently connected.</h1>
+        <h1>
+          Your Metamask wallet is currently connected. Address:{" "}
+          {user.get("ethAddress")}
+        </h1>
       ) : (
         <h1>{error}</h1>
       )}
