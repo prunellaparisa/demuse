@@ -50,20 +50,46 @@ const App = () => {
   const [paymentAddresses, setPaymentAddresses] = useState();
   const [index, setIndex] = useState(0);
   const [userData, setUserData] = useState();
+  const [showSideBar, setShowSideBar] = useState();
   const location = useLocation();
   useEffect(() => {
-    //console.log("location.pathname: " + location.pathname);
     let paths = ["/", "/album"];
     if (!paths.includes(location.pathname)) {
       setNftAlbum();
       setIndex(0);
+      setShowSideBar(false);
+    } else {
+      setShowSideBar(false);
+      if (userData && userData.role === "customer") {
+        setShowSideBar(true);
+      }
     }
-  }, [location.pathname]);
+  }, [location.pathname, userData]);
 
   return (
     <>
       <AuthProvider>
         <Layout>
+          {showSideBar && (
+            <Sider width={300} className="sideBar">
+              <img src={Spotify} alt="Logo" className="logo"></img>
+              <div className="searchBar">
+                <span> Search </span>
+                <SearchOutlined style={{ fontSize: "30px" }} />
+              </div>
+              <Link to="/">
+                <p style={{ color: "#1DB954" }}> Home </p>
+              </Link>
+              <p> Artist's Corner </p>
+              <div className="recentPlayed">
+                <p className="recentTitle">RECENTLY PLAYED</p>
+                <div className="install">
+                  <span> Install App </span>
+                  <DownCircleOutlined style={{ fontSize: "30px" }} />
+                </div>
+              </div>
+            </Sider>
+          )}
           <Content className="contentWindow">
             <Routes>
               <Route
@@ -71,7 +97,7 @@ const App = () => {
                 element={
                   <PrivateLandingRoute>
                     <UserDataProvider>
-                      <Landing />
+                      <Landing setUserData={setUserData} />
                     </UserDataProvider>
                   </PrivateLandingRoute>
                 }

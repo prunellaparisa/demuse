@@ -3,8 +3,9 @@ import CustomerLanding from "../customer/landing";
 import AdminLanding from "../admin/landing";
 import { useUserData } from "./auth/UserData";
 
-const Landing = () => {
+const Landing = ({ setUserData }) => {
   const { userData } = useUserData();
+  setUserData(userData);
   // const docExists = async () => (await db.collection("teacher-info").doc(currentUser.uid).get()).exists
 
   return (
