@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./index.css";
 import { Tabs, Button, Spin, Modal } from "antd";
-import { library } from "../../helpers/albumList";
 import { db } from "../../utils/firebase";
 import { useIPFS } from "../../hooks/useIPFS";
 import Settings from "../Settings";
@@ -12,6 +11,7 @@ import MakeAlbum from "../MakePlaylist";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import { useUserData } from "../../global/auth/UserData";
+import Greeting from "./Greeting";
 const { TabPane } = Tabs;
 
 // image loading from ipfs is sooooo slow fr
@@ -503,7 +503,7 @@ const CustomerLanding = () => {
     <>
       <Tabs defaultActiveKey="1" centered>
         <TabPane tab="FEATURED" key="1">
-          <h1 className="featuredTitle">Today Is The Day</h1>
+          <Greeting />
           {isWeb3Enabled &&
           isAuthenticated &&
           userData.ethAddress === user.get("ethAddress") ? (

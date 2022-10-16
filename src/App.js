@@ -50,7 +50,7 @@ const App = () => {
   const [paymentAddresses, setPaymentAddresses] = useState();
   const [index, setIndex] = useState(0);
   const [userData, setUserData] = useState();
-  const [showSideBar, setShowSideBar] = useState();
+  const [showSideBar, setShowSideBar] = useState(false);
   const location = useLocation();
   useEffect(() => {
     let paths = ["/", "/album"];
@@ -78,7 +78,7 @@ const App = () => {
                 <SearchOutlined style={{ fontSize: "30px" }} />
               </div>
               <Link to="/">
-                <p style={{ color: "#1DB954" }}> Home </p>
+                <p style={{ color: "#ada8b6" }}> Home </p>
               </Link>
               <p> Artist's Corner </p>
               <div className="recentPlayed">
@@ -121,18 +121,18 @@ const App = () => {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/error" element={<ErrorRoute />} />
             </Routes>
-            <Footer className="footer">
-              {nftAlbum && (
-                <Player
-                  tracks={nftAlbum}
-                  index={index}
-                  paymentAddresses={paymentAddresses}
-                  userData={userData}
-                />
-              )}
-            </Footer>
           </Content>
         </Layout>
+        <Footer className="footer">
+          {nftAlbum && (
+            <Player
+              tracks={nftAlbum}
+              index={index}
+              paymentAddresses={paymentAddresses}
+              userData={userData}
+            />
+          )}
+        </Footer>
       </AuthProvider>
     </>
   );

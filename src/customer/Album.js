@@ -9,7 +9,6 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { useUserData } from "../global/auth/UserData";
 
-// authenticate wallet TODO
 const Album = ({ setNftAlbum, setIndex, setPaymentAddresses, setUserData }) => {
   const { state: album } = useLocation();
   const navigate = useNavigate();
@@ -87,9 +86,6 @@ const Album = ({ setNftAlbum, setIndex, setPaymentAddresses, setUserData }) => {
             >
               OpenSea
               <img src={Opensea} className="openLogo" />
-            </div>
-            <div className="openButton" onClick={() => navigate("/")}>
-              Go Home
             </div>
           </div>
           <div className="tableHeader">
