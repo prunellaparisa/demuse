@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./MusicMint.css";
 import { Tabs, Button } from "antd";
-import { useUserData } from "../global/auth/UserData";
-import { db } from "../utils/firebase";
-import { useIPFS } from "../hooks/useIPFS";
+import { useUserData } from "../../global/auth/UserData";
+import { db } from "../../utils/firebase";
+import { useIPFS } from "../../hooks/useIPFS";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import axios from "axios";

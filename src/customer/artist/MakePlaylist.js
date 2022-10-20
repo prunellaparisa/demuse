@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./MakePlaylist.css";
 import { Tabs, Button } from "antd";
-import { useAuth } from "../global/auth/Authentication";
-import { useUserData } from "../global/auth/UserData";
+import { useAuth } from "../../global/auth/Authentication";
+import { useUserData } from "../../global/auth/UserData";
 import { useMoralis } from "react-moralis";
-import { db } from "../utils/firebase";
+import { db } from "../../utils/firebase";
 import axios from "axios";
-import { useIPFS } from "../hooks/useIPFS";
+import { useIPFS } from "../../hooks/useIPFS";
 import ReactDOMServer from "react-dom/server";
 
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";

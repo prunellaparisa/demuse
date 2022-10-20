@@ -4,13 +4,13 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import SignIn from "./global/signin/SignIn";
 import SignUp from "./global/signin/SignUp";
 import Album from "./customer/Album";
-import MusicUpload from "./customer/MusicUpload";
-import { AuthProvider } from "./global/auth/Authentication";
+import MusicUpload from "./customer/artist/MusicUpload";
 import { UserDataProvider } from "./global/auth/UserData";
 import { PrivateLandingRoute } from "./global/routes/PrivateLandingRoute";
 import ErrorRoute from "./global/routes/ErrorRoute";
 import { PrivateRoute } from "./global/routes/PrivateRoute";
 import Landing from "./global/Landing";
+import ArtistCorner from "./customer/artist/ArtistCorner";
 import "./App.css";
 import { Link } from "react-router-dom";
 import Player from "./components/AudioPlayer";
@@ -53,7 +53,7 @@ const App = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const location = useLocation();
   useEffect(() => {
-    let paths = ["/", "/album"];
+    let paths = ["/", "/album", "/artistCorner"];
     if (!paths.includes(location.pathname)) {
       setNftAlbum();
       setIndex(0);
@@ -66,74 +66,84 @@ const App = () => {
     }
   }, [location.pathname, userData]);
 
+  //<img src={Spotify} alt="Logo" className="logo"></img>
   return (
     <>
-      <AuthProvider>
-        <Layout>
-          {showSideBar && (
-            <Sider width={300} className="sideBar">
-              <img src={Spotify} alt="Logo" className="logo"></img>
-              <div className="searchBar">
-                <span> Search </span>
-                <SearchOutlined style={{ fontSize: "30px" }} />
+      <Layout>
+        {showSideBar && (
+          <Sider width={300} className="sideBar">
+            <div className="searchBar">
+              <span> Search </span>
+              <SearchOutlined style={{ fontSize: "30px" }} />
+            </div>
+            <Link to="/">
+              <p style={{ color: "#ada8b6" }}> Home </p>
+            </Link>
+            <Link to="/artistCorner">
+              <p style={{ color: "#ada8b6" }}> Artist's Corner </p>
+            </Link>
+            <div className="recentPlayed">
+              <p className="recentTitle">RECENTLY PLAYED</p>
+              <div className="install">
+                <span> Install App </span>
+                <DownCircleOutlined style={{ fontSize: "30px" }} />
               </div>
-              <Link to="/">
-                <p style={{ color: "#ada8b6" }}> Home </p>
-              </Link>
-              <p> Artist's Corner </p>
-              <div className="recentPlayed">
-                <p className="recentTitle">RECENTLY PLAYED</p>
-                <div className="install">
-                  <span> Install App </span>
-                  <DownCircleOutlined style={{ fontSize: "30px" }} />
-                </div>
-              </div>
-            </Sider>
-          )}
-          <Content className="contentWindow">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <PrivateLandingRoute>
-                    <UserDataProvider>
-                      <Landing setUserData={setUserData} />
-                    </UserDataProvider>
-                  </PrivateLandingRoute>
-                }
-              />
-              <Route
-                path="/album"
-                element={
+            </div>
+          </Sider>
+        )}
+        <Content className="contentWindow">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PrivateLandingRoute>
                   <UserDataProvider>
-                    <PrivateRoute role={role.C}>
-                      <Album
-                        setNftAlbum={setNftAlbum}
-                        setIndex={setIndex}
-                        setPaymentAddresses={setPaymentAddresses}
-                        setUserData={setUserData}
-                      />
-                    </PrivateRoute>
+                    <Landing setUserData={setUserData} />
                   </UserDataProvider>
-                }
-              />
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/error" element={<ErrorRoute />} />
-            </Routes>
-          </Content>
-        </Layout>
-        <Footer className="footer">
-          {nftAlbum && (
-            <Player
-              tracks={nftAlbum}
-              index={index}
-              paymentAddresses={paymentAddresses}
-              userData={userData}
+                </PrivateLandingRoute>
+              }
             />
-          )}
-        </Footer>
-      </AuthProvider>
+            <Route
+              path="/album"
+              element={
+                <UserDataProvider>
+                  <PrivateRoute role={role.C}>
+                    <Album
+                      setNftAlbum={setNftAlbum}
+                      setIndex={setIndex}
+                      setPaymentAddresses={setPaymentAddresses}
+                      setUserData={setUserData}
+                    />
+                  </PrivateRoute>
+                </UserDataProvider>
+              }
+            />
+            <Route
+              path="/artistCorner"
+              element={
+                <UserDataProvider>
+                  <PrivateRoute role={role.C}>
+                    <ArtistCorner />
+                  </PrivateRoute>
+                </UserDataProvider>
+              }
+            />
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/error" element={<ErrorRoute />} />
+          </Routes>
+        </Content>
+      </Layout>
+      <Footer className="footer">
+        {nftAlbum && (
+          <Player
+            tracks={nftAlbum}
+            index={index}
+            paymentAddresses={paymentAddresses}
+            userData={userData}
+          />
+        )}
+      </Footer>
     </>
   );
 };

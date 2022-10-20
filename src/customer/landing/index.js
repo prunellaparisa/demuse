@@ -5,9 +5,9 @@ import { Tabs, Button, Spin, Modal } from "antd";
 import { db } from "../../utils/firebase";
 import { useIPFS } from "../../hooks/useIPFS";
 import Settings from "../Settings";
-import MusicUpload from "../MusicUpload";
-import MusicMint from "../MusicMint";
-import MakeAlbum from "../MakePlaylist";
+import MusicUpload from "../artist/MusicUpload";
+import MusicMint from "../artist/MusicMint";
+import MakeAlbum from "../artist/MakePlaylist";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import { useUserData } from "../../global/auth/UserData";
@@ -501,54 +501,36 @@ const CustomerLanding = () => {
   ))}*/
   return (
     <>
-      <Tabs defaultActiveKey="1" centered>
-        <TabPane tab="FEATURED" key="1">
-          <Greeting />
-          {isWeb3Enabled &&
-          isAuthenticated &&
-          userData.ethAddress === user.get("ethAddress") ? (
-            <div>
-              <p>
-                Your Metamask wallet is currently connected. Address:{" "}
-                {user.get("ethAddress")}
-              </p>
-              {paid ? (
-                <Spin spinning={loading}>
-                  <div className="albums">{albumsUI}</div>
-                </Spin>
-              ) : (
-                <div>
-                  <h1>Please pay to continue using demuse services.</h1>
-                  <Button type="primary" onClick={() => paySubscription()}>
-                    Pay Subscription
-                  </Button>
-                </div>
-              )}
-            </div>
+      <Greeting />
+      {isWeb3Enabled &&
+      isAuthenticated &&
+      userData.ethAddress === user.get("ethAddress") ? (
+        <div>
+          <p>
+            Your Metamask wallet is currently connected. Address:{" "}
+            {user.get("ethAddress")}
+          </p>
+          {paid ? (
+            <Spin spinning={loading}>
+              <div className="albums">{albumsUI}</div>
+            </Spin>
           ) : (
             <div>
-              <p>
-                There's an error connecting to your wallet. Please try again.
-              </p>
-              <Button type="primary" onClick={() => connectWallet()}>
-                Connect Wallet
+              <h1>Please pay to continue using demuse services.</h1>
+              <Button type="primary" onClick={() => paySubscription()}>
+                Pay Subscription
               </Button>
             </div>
           )}
-        </TabPane>
-        <TabPane tab="MUSIC UPLOAD" key="2">
-          <MusicUpload />
-        </TabPane>
-        <TabPane tab="MUSIC MINT" key="3">
-          <MusicMint />
-        </TabPane>
-        <TabPane tab="MAKE PLAYLIST" key="4">
-          <MakeAlbum />
-        </TabPane>
-        <TabPane tab="SETTINGS" key="5">
-          <Settings />
-        </TabPane>
-      </Tabs>
+        </div>
+      ) : (
+        <div>
+          <p>There's an error connecting to your wallet. Please try again.</p>
+          <Button type="primary" onClick={() => connectWallet()}>
+            Connect Wallet
+          </Button>
+        </div>
+      )}
     </>
   );
 };

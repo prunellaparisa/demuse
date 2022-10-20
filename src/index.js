@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./global/auth/Authentication";
 import { MoralisProvider } from "react-moralis";
 
 ReactDOM.render(
@@ -12,9 +13,11 @@ ReactDOM.render(
       appId="70tpE4NpBqtLegtSy0M4XWxOjhVYtn939Hbl4iTM"
       serverUrl="https://ovquiyzyitaq.usemoralis.com:2053/server"
     >
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthProvider>
     </MoralisProvider>
   </React.StrictMode>,
   document.getElementById("root")

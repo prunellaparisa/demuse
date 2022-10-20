@@ -3,8 +3,8 @@ import "./MusicUpload.css";
 import { Button, Form, Upload, Alert, Spin } from "antd";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { useMoralisFile } from "react-moralis";
-import { useUserData } from "../global/auth/UserData";
-import { db } from "../utils/firebase";
+import { useUserData } from "../../global/auth/UserData";
+import { db } from "../../utils/firebase";
 import { Buffer } from "buffer";
 import getBlobDuration from "get-blob-duration";
 
