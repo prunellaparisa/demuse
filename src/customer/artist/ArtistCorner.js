@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./ArtistCorner.css";
 import { Tabs, Button, Spin, Modal } from "antd";
-import Settings from "../Settings";
 import MusicUpload from "./MusicUpload";
 import MusicMint from "./MusicMint";
 import MakeAlbum from "./MakePlaylist";
@@ -21,9 +20,6 @@ const ArtistCorner = () => {
         </TabPane>
         <TabPane tab="MAKE PLAYLIST" key="3">
           <MakeAlbum />
-        </TabPane>
-        <TabPane tab="SETTINGS" key="4">
-          <Settings />
         </TabPane>
       </Tabs>
     </>

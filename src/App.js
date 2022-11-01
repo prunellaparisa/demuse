@@ -11,6 +11,7 @@ import ErrorRoute from "./global/routes/ErrorRoute";
 import { PrivateRoute } from "./global/routes/PrivateRoute";
 import Landing from "./global/Landing";
 import ArtistCorner from "./customer/artist/ArtistCorner";
+import Settings from "./customer/Settings";
 import "./App.css";
 import { Link } from "react-router-dom";
 import Player from "./components/AudioPlayer";
@@ -53,7 +54,7 @@ const App = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const location = useLocation();
   useEffect(() => {
-    let paths = ["/", "/album", "/artistCorner"];
+    let paths = ["/", "/album", "/artistCorner", "/settings"];
     if (!paths.includes(location.pathname)) {
       setNftAlbum();
       setIndex(0);
@@ -81,6 +82,9 @@ const App = () => {
             </Link>
             <Link to="/artistCorner">
               <p style={{ color: "#ada8b6" }}> Artist's Corner </p>
+            </Link>
+            <Link to="/settings">
+              <p style={{ color: "#ada8b6" }}> Settings </p>
             </Link>
             <div className="recentPlayed">
               <p className="recentTitle">RECENTLY PLAYED</p>
@@ -124,6 +128,16 @@ const App = () => {
                 <UserDataProvider>
                   <PrivateRoute role={role.C}>
                     <ArtistCorner />
+                  </PrivateRoute>
+                </UserDataProvider>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <UserDataProvider>
+                  <PrivateRoute role={role.C}>
+                    <Settings />
                   </PrivateRoute>
                 </UserDataProvider>
               }

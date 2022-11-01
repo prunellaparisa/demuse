@@ -8,11 +8,12 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import { ethers } from "ethers";
 import axios from "axios";
 
-// TODO:
-// 1. allow artists to make albums/playlists based on what they've minted <= done
+// 1. allow artists to make albums/playlists based on what they've minted
 // 2. display playable albums/playlists on home page
 // 3. record every listener's monthly log
 // 4. design systematic payment from listener to payment to artist
+
+// TODO: sider currently disappears when page refreshed on artist corner
 
 // retrieve approved submission, have a mint button for them, and change status to "minted"
 const MusicMint = () => {
